@@ -1,0 +1,26 @@
+name: Get artifacts from docker
+run-name: run Docker
+on: [push]
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: remove dependencies install docker
+        run: |
+          sudo apt-get remove containerd.io
+          sudo apt install docker.io docker-compose -y
+      - name: Create container
+        run: docker build -t builder .
+      - name: Run container with instructions
+        run: docker run --name test -t builder ls
+      - name: Get logs
+        run: docker cp test:/repo/log.txt ./log.txt
+      - name: upload_artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: log_artifact
+          path: /home/runner/work/lab08/lab08/log.txt

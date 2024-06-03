@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.4)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/third-party/CMake-codecov/cmake" ${CMAKE_MODULE_PATH})  
+project(banking)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/banking)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/banking)
+
+
+if (BUILD_TESTS)
+  add_subdirectory(third-party/gtest)
+  include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+  include_directories(${gmock_SOURCE_DIR}/include ${gmock_SOURCE_DIR})  
+  enable_testing()
+  
+
+
+  file(GLOB SOURCES for_test/*.cpp)
+  add_executable(testng ${SOURCES})
+  target_link_libraries(testng gtest gtest_main gmock transaction_lib account_lib)
+  add_test(NAME testng COMMAND testng)
+  if (BUILD_COVERAGE)
+    set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    find_package(codecov)
+    add_coverage(testng)
+    list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/for_test/*'")
+    coverage_evaluate()
+  endif ()
+endif ()
