@@ -6,7 +6,7 @@ project(banking)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/banking)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/banking)
 
-#
+
 if (BUILD_TESTS)
   add_subdirectory(third-party/gtest)
   include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
