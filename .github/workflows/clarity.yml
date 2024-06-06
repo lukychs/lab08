@@ -1,6 +1,7 @@
 name: Get artifacts from docker
 run-name: run Docker
 on: [push]
+#
 jobs:
   linux:
     runs-on: ubuntu-latest
